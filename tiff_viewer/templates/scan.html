@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} </title>
+    <link rel="stylesheet" type="text/css" href="/static/content/bootstrap.min.css" />
+    <script src="/static/scripts/modernizr-2.6.2.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.js"
+            integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="
+            crossorigin="anonymous"></script>
+    
+    
+
+    <script type="text/javascript">
+        var counter = 1;
+        var limit = 5;
+        function addInput(divName) {
+            if (counter == limit) {
+                alert('Maximum reached')
+            }
+            else {
+                var newinput = document.createElement('input');
+                newinput.innerHTML = "<input type='submit' name='myInputs[]'>";
+                document.getElementById(divName).appendChild(newinput);
+                counter++;
+            }
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            data($('input#image_data').val());
+
+            $( "#prev_image" ).click(function(){
+                prev();
+            });
+            $( "#next_image" ).click(function(){
+                next();
+            });
+        });
+        
+        var images = new Array();
+
+        function data(get_images) {
+            images = [];
+            var res_1 = get_images.split(",");                        
+            for (i = 0; i < res_1.length; i++) {
+                if (i == res_1.length - 1) {
+                    n = 6
+                }
+                else {
+                    n = 5
+                }
+                var res_2 = res_1[i].split("/");
+                var res_3 = res_2[res_2.length - 1].slice(0, -n);
+                images.push(res_3);
+            }
+            $('#slideshow_image').attr('src', '../static/temp/' + images[0] + '.jpg');
+
+            
+        }
+
+        function prev() {
+            $('#slideshow_image').fadeOut(300, function () {
+                var prev_val = document.getElementById("img_no").value;
+                var prev_val = Number(prev_val) - 1;
+                if (prev_val <= -1) {
+                    prev_val = images.length - 1;
+                }
+                $('#slideshow_image').attr('src', '../static/temp/' + images[prev_val] + '.jpg');
+                document.getElementById("img_no").value = prev_val;
+            });
+            $('#slideshow_image').fadeIn(1000);            
+        }
+
+        function next() {
+            $('#slideshow_image').fadeOut(300, function () {
+                var next_val = document.getElementById("img_no").value;
+                var next_val = Number(next_val) + 1;
+                if (next_val >= images.length) {
+                    next_val = 0;
+                }
+                $('#slideshow_image').attr('src', '../static/temp/' + images[next_val] + '.jpg');
+                document.getElementById("img_no").value = next_val;
+            });
+            $('#slideshow_image').fadeIn(1000);
+        }
+    </script>
+
+    <style>
+        img {
+	        transform: inherit;
+	        transition: all 2s;
+        }
+        img:hover {
+	        transform: rotatez(-45deg)
+				rotateZ(-45deg);
+        }
+        img:single-button {
+            transform: rotatez(-90deg)
+				rotateZ(-90deg);
+        }
+    </style>
+
+
+</head>
+<body>
+    <div class="container body-content">
+        <!--<p>{{ pdf }}</p>-->
+        <br />
+        <input class="btn btn-info" type="submit" value="PREVIOUS" id="prev_image">
+        <input class="btn btn-info" type="submit" value="NEXT" id="next_image">
+        <input type="hidden" id="img_no" value="0">                
+
+        <input type="hidden" value="{{ pdf }}" id="image_data" />
+        
+        <hr />
+        <p>{{message}}</p>
+        <div id="slide_cont">
+            <img src="data({{ pdf }})" id="slideshow_image" width="85%" height="850px">
+        </div>
+
+
+
+
+        <hr />
+        <footer>
+            <p>&copy; {{ year }} - <em>RFI</em> on web.</p>
+            <p>Canterury Health Labs. Canterbury District Health Board.</p>
+        </footer>
+    </div>
+
+    <script src="/static/scripts/jquery-1.10.2.js"></script>
+    <script src="/static/scripts/bootstrap.js"></script>
+    <script src="/static/scripts/respond.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
